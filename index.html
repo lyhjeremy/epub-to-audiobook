@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>EPUB → Audiobook — Turn any e-book into an audiobook you can read along to</title>
+<meta name="description" content="A free app that turns any EPUB e-book into a natural-sounding audiobook on your own computer — with read-along highlighting, in English, Mandarin, and Cantonese." />
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #FBF8F1;
+    --rule: #E5DCC7;
+    --soft: #6B7280;
+    --accent: #D4A537;
+    --teal: #15868C;
+    --plum: #5B4B8A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.7;
+    font-size: 18px;
+  }
+  .hero { width: 100%; background: #14142b; overflow: hidden; }
+  .hero svg { width: 100%; height: 320px; display: block; }
+  .container { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  h1 { font-size: 40px; line-height: 1.2; text-align: center; margin: 0 0 18px; }
+  .lede { font-size: 21px; color: #33334d; text-align: center; margin: 0 auto 8px; max-width: 660px; }
+  .byline { color: var(--soft); font-style: italic; margin: 22px 0 36px; text-align: center; }
+  h2 { font-size: 28px; margin: 56px 0 16px; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+  h3 { font-size: 20px; margin: 0 0 8px; }
+  p { margin: 0 0 18px; }
+  a { color: var(--teal); }
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 36px 0; }
+  .card {
+    background: #fff; border: 1px solid var(--rule); border-radius: 12px;
+    padding: 22px 22px; font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .card .ico { font-size: 26px; }
+  .card h3 { font-family: 'Helvetica Neue', Arial, sans-serif; margin-top: 8px; }
+  .card p { font-size: 15.5px; color: #444; margin: 0; line-height: 1.6; }
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 28px 0; }
+  .steps li {
+    position: relative; padding: 14px 0 14px 56px; border-bottom: 1px dashed var(--rule);
+  }
+  .steps li::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; left: 0; top: 12px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--ink); color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .langs { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 6px; justify-content: center; }
+  .chip {
+    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 600;
+    background: rgba(91,75,138,0.10); color: var(--plum);
+    border: 1px solid rgba(91,75,138,0.30); border-radius: 999px; padding: 7px 16px;
+  }
+  blockquote {
+    border-left: 4px solid var(--accent); margin: 28px 0; padding: 4px 24px;
+    font-style: italic; background: rgba(212, 165, 55, 0.08);
+  }
+  .btnrow { text-align: center; margin: 44px 0 8px; }
+  .btn {
+    display: inline-block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px; font-weight: 600; text-decoration: none; padding: 13px 24px;
+    border-radius: 8px; margin: 6px;
+  }
+  .btn-solid { background: var(--ink); color: #fff; }
+  .btn-ghost { border: 1px solid var(--ink); color: var(--ink); }
+  .note {
+    background: #fff; border: 1px solid var(--rule); border-left: 4px solid var(--teal);
+    border-radius: 8px; padding: 16px 22px; font-size: 15.5px; color: #444;
+    font-family: 'Helvetica Neue', Arial, sans-serif; margin: 30px 0;
+  }
+  .footer { text-align: center; color: var(--soft); font-size: 14px; margin-top: 60px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  @media (max-width: 560px) {
+    h1 { font-size: 30px; }
+    .features { grid-template-columns: 1fr; }
+    .hero svg { height: 240px; }
+  }
+</style>
+</head>
+<body>
+<div class="hero">
+  <svg viewBox="0 0 780 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An open book turning into sound waves">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1c1c3d"/>
+        <stop offset="1" stop-color="#101025"/>
+      </linearGradient>
+    </defs>
+    <rect width="780" height="320" fill="url(#bg)"/>
+    <!-- open book -->
+    <g transform="translate(150,150)">
+      <path d="M0 0 C-70 -28 -140 -22 -180 -6 L-180 96 C-140 80 -70 74 0 102 Z" fill="#f3ead6" opacity="0.96"/>
+      <path d="M0 0 C70 -28 140 -22 180 -6 L180 96 C140 80 70 74 0 102 Z" fill="#e7dcc2" opacity="0.96"/>
+      <g stroke="#b9ac8c" stroke-width="3" opacity="0.8">
+        <line x1="-150" y1="6" x2="-30" y2="-6"/>
+        <line x1="-150" y1="28" x2="-30" y2="16"/>
+        <line x1="-150" y1="50" x2="-30" y2="38"/>
+        <line x1="-150" y1="72" x2="-30" y2="60"/>
+      </g>
+    </g>
+    <!-- sound waves -->
+    <g transform="translate(430,150)" stroke-linecap="round" fill="none">
+      <g stroke="#D4A537" stroke-width="7">
+        <line x1="0" y1="-12" x2="0" y2="12"/>
+        <line x1="24" y1="-34" x2="24" y2="34"/>
+        <line x1="48" y1="-58" x2="48" y2="58"/>
+      </g>
+      <g stroke="#15868C" stroke-width="7">
+        <line x1="72" y1="-40" x2="72" y2="40"/>
+        <line x1="96" y1="-66" x2="96" y2="66"/>
+        <line x1="120" y1="-30" x2="120" y2="30"/>
+      </g>
+      <g stroke="#E0567A" stroke-width="7">
+        <line x1="144" y1="-50" x2="144" y2="50"/>
+        <line x1="168" y1="-22" x2="168" y2="22"/>
+        <line x1="192" y1="-44" x2="192" y2="44"/>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<div class="container">
+  <p class="kicker">A free, open-source desktop app</p>
+  <h1>EPUB → Audiobook</h1>
+  <p class="lede">Turn any e-book into a natural-sounding audiobook on your own computer —
+  and follow along on screen, with the line being read lit up as you listen.</p>
+  <p class="byline">By Jeremy Lee</p>
+
+  <div class="langs">
+    <span class="chip">🇬🇧 English</span>
+    <span class="chip">🀄 Mandarin (Mainland)</span>
+    <span class="chip">🀄 Mandarin (Taiwan)</span>
+    <span class="chip">🇭🇰 Cantonese</span>
+  </div>
+
+  <h2>What it does</h2>
+  <p>You give it an EPUB e-book; it gives you back an audiobook. The app reads the
+  book aloud in a natural-sounding voice, splits it neatly into chapters, and lets
+  you <em>read along</em> — the sentence you're hearing is highlighted on screen, in
+  time with the narration. Everything runs on your own machine, for free, with no
+  account and no subscription.</p>
+
+  <div class="features">
+    <div class="card">
+      <div class="ico">🗣️</div>
+      <h3>Natural voices, free</h3>
+      <p>Uses Microsoft's neural text-to-speech — lifelike narration with no API key, no cost, and a choice of voices.</p>
+    </div>
+    <div class="card">
+      <div class="ico">🟡</div>
+      <h3>Read along</h3>
+      <p>The current sentence lights up exactly as it's spoken, so you can read and listen at the same time.</p>
+    </div>
+    <div class="card">
+      <div class="ico">🀄</div>
+      <h3>English &amp; Chinese</h3>
+      <p>Handles Mandarin and Cantonese too — correct sentence splitting, Chinese fonts, and in-sync highlighting.</p>
+    </div>
+    <div class="card">
+      <div class="ico">📚</div>
+      <h3>Clean chapters</h3>
+      <p>Detects real chapters and skips the cover, copyright, and index pages, naming each audio file sensibly.</p>
+    </div>
+    <div class="card">
+      <div class="ico">💾</div>
+      <h3>Safe &amp; resumable</h3>
+      <p>If it's interrupted, just run it again — it picks up where it left off instead of starting over.</p>
+    </div>
+    <div class="card">
+      <div class="ico">🎛️</div>
+      <h3>Built for listening</h3>
+      <p>Light/dark themes, adjustable speed and text size, auto-advance, a sleep timer, and keyboard shortcuts.</p>
+    </div>
+  </div>
+
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><strong>Open your EPUB.</strong> Drop in any e-book you own or one in the public domain.</li>
+    <li><strong>Pick a voice and language.</strong> English, Mandarin, or Cantonese — Chinese books auto-select a fitting voice.</li>
+    <li><strong>Convert.</strong> The app turns each chapter into audio and saves it, safely, as it goes.</li>
+    <li><strong>Listen &amp; read along.</strong> Play it in the built-in reader with the current line highlighted, or export to MP3 / a single M4B audiobook.</li>
+  </ol>
+
+  <blockquote>Six versions of refinement — from the first working converter to a polished
+  reader with Chinese support and one-click setup. Version 6 is the latest.</blockquote>
+
+  <div class="note">
+    <strong>About the books:</strong> this app ships <em>no</em> books or audio — you bring your
+    own EPUB files. It's meant for converting e-books you own, or public-domain titles,
+    into audio for your personal use.
+  </div>
+
+  <h2>Get it</h2>
+  <p>The app is open source. Grab the code, install a few free Python packages, and run
+  version 6 — full step-by-step instructions are in the README.</p>
+
+  <div class="btnrow">
+    <a class="btn btn-solid" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app on GitHub</a>
+    <a class="btn btn-ghost" href="https://github.com/lyhjeremy/epub-to-audiobook#quick-start-v6">Read the setup guide</a>
+  </div>
+
+  <p class="footer">Built with Python &amp; Microsoft edge-tts &middot; &copy; 2026 Jeremy Lee &middot; MIT License</p>
+</div>
+</body>
+</html>

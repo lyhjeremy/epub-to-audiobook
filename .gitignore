@@ -1,0 +1,46 @@
+# =============================================================================
+#  EPUB → Audiobook — what NOT to publish
+# =============================================================================
+
+# --- Source books: keep these out of the public repo (third-party copyright) ---
+*.epub
+
+# --- Generated audio (large; derived from copyrighted books) ---
+*.mp3
+*.m4a
+*.m4b
+*.wav
+*.aac
+*.ogg
+
+# --- Generated read-along timing sidecars ---
+*.subs.json
+
+# --- Per-book output folders (audio + sidecars produced by the app) ---
+/Man's Search for Meaning/
+/三生万物 (Cantonese)/
+/三生万物 (Mandarin)/
+/哈利波特1神秘的魔法石/
+
+# --- macOS app bundle (build artifact) ---
+*.app/
+**/EPUB to Audiobook.app/
+
+# --- Python / build artifacts ---
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.env
+venv/
+.venv/
+build/
+dist/
+
+# --- Bundled ffmpeg binaries, if anyone drops them next to the app ---
+/ffmpeg/
+/bin/
+ffmpeg
+ffmpeg.exe
+ffprobe
+ffprobe.exe
