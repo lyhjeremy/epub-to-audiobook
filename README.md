@@ -28,23 +28,21 @@ Free, runs on your own computer, and supports **English and Chinese**
 
 ## Repository layout
 
-This repo contains **code only**. The `.epub` source books and the generated
-`.mp3` / `.m4b` audio are intentionally **not** included (third-party copyright
-and file size) — point the app at your own EPUBs.
+This repo contains **code only**, and ships just the **latest version (V6)**.
+The `.epub` source books and the generated `.mp3` / `.m4b` audio are intentionally
+**not** included (third-party copyright and file size) — point the app at your own EPUBs.
 
 ```
-App V1/ … App V6/      One self-contained folder per version (V6 is the latest)
-  epub_to_audiobook_gui_v*.py   🖱️  The app: converter + read-along player
-  epub_to_audiobook_v*.py       ⌨️  Command-line version
-  audiobook_engine*.py          🧠  Non-UI engine (text → chapters → speech + timing)
-  README_V*.md                  Notes on what changed in that version
-App V6/
-  Launch Audiobook App.bat      Windows launcher
-  Launch Audiobook App.command  macOS launcher
-  Make Mac App.command          Builds a double-clickable macOS .app
+App V6/                          The app (latest version — self-contained)
+  epub_to_audiobook_gui_v6.py    🖱️  The app: converter + read-along player
+  epub_to_audiobook_v6.py        ⌨️  Command-line version
+  audiobook_engine_v6.py         🧠  Engine: accurate timing + speed rendering
+  audiobook_engine.py            🧩  Base engine (CJK-aware + ffmpeg locator)
+  README_V6.md                   Notes for this version
+  Launch Audiobook App.bat       Windows launcher
+  Launch Audiobook App.command   macOS launcher
+  Make Mac App.command           Builds a double-clickable macOS .app
 ```
-
-**Each version folder is self-contained** — start with **`App V6`**, the latest.
 
 ## Quick start (V6)
 
@@ -68,7 +66,10 @@ On Windows you can also double-click **`App V6/Launch Audiobook App.bat`**; on
 macOS, **`Launch Audiobook App.command`** (or build a real app with
 **`Make Mac App.command`**).
 
-## Version history
+## How it evolved
+
+Built over six iterations; this repo ships the latest, **V6**, which includes
+everything below:
 
 - **V1** — core pipeline: text extraction, chapter detection, `edge-tts`
   synthesis, crash-safe atomic writes, resume-on-rerun.
