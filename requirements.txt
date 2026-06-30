@@ -1,0 +1,11 @@
+# Core
+edge-tts
+ebooklib
+beautifulsoup4
+pygame
+
+# Optional: ID3 tags + embedded cover art on each MP3
+mutagen
+
+# Note: ffmpeg (a system binary, not a pip package) is needed only for
+# speed control and single-file .m4b export. See README for install commands.
