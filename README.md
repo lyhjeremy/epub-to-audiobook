@@ -7,6 +7,7 @@ Free, runs on your own computer, and supports **English and Chinese**
 
 > 🌐 **Non-technical overview:** see the showcase page →
 > https://lyhjeremy.github.io/epub-to-audiobook/
+> 📖 **Product overview:** https://lyhjeremy.github.io/epub-to-audiobook/overview/
 
 ---
 

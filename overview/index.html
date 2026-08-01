@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>EPUB → Audiobook — turn any book into audio, and read along in sync</title>
+<meta name="description" content="Converts any EPUB into chapter-named audio with natural neural voices, then highlights each sentence in time with the playback. English, Mandarin and Cantonese. Free, local, resumable." />
+<meta name="theme-color" content="#FBF8F1" />
+<meta property="og:title" content="EPUB → Audiobook" />
+<meta property="og:description" content="Chapter detection, neural voices, and a read-along player that highlights the sentence you are hearing. No API key, no cost." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lyhjeremy.github.io/epub-to-audiobook/overview/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #FBF8F1;
+    --card: #FFFFFF;
+    --plate: #FFFFFF;
+    --ink: #1a1a2e;
+    --ink2: #3d3d55;
+    --muted: #6B7280;
+    --rule: #E5DCC7;
+    --accent: #6D28D9;
+    --accent2: #B45309;
+    --link: #0E7490;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: 'Source Sans 3', -apple-system, system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --shadow: 0 1px 2px rgba(26,26,46,.05), 0 10px 34px rgba(26,26,46,.07);
+    --spine:  92px;
+    --col:    min(100% - 2.6rem, 62rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #14141f;
+      --card: #1c1c2a;
+      --plate: #f7f4ec;
+      --ink: #F2EFE6;
+      --ink2: #C9C4B6;
+      --muted: #918B7D;
+      --rule: #33313f;
+      --accent: #A78BFA;
+      --accent2: #E3BC5E;
+      --link: #22D3EE;
+      --shadow: 0 1px 2px rgba(0,0,0,.32), 0 10px 34px rgba(0,0,0,.4);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: clamp(17px, 0.55rem + 0.6vw, 19.5px);
+    line-height: 1.68; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--link); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  strong { font-weight: 700; color: var(--ink); }
+  code { font-family: var(--mono); font-size: .86em;
+         background: color-mix(in srgb, var(--ink) 7%, transparent);
+         padding: .12em .38em; border-radius: 4px; }
+  .wrap { width: var(--col); margin: 0 auto; }
+
+  .eyebrow { font-family: var(--mono); font-weight: 600; font-size: 11.5px;
+             letter-spacing: .17em; text-transform: uppercase; color: var(--muted);
+             margin: 0 0 14px; }
+
+  .masthead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding: 30px 0 0; }
+  .logo { font-family: var(--sans); font-weight: 800; font-size: 21px;
+          letter-spacing: -.02em; display: flex; align-items: center; gap: 9px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+  .tagline { font-size: 15px; color: var(--ink2); font-family: var(--sans); }
+
+  .hero { padding: 44px 0 54px; }
+  .kicker { font-family: var(--sans); font-size: clamp(18px, 2.1vw, 23px); font-weight: 600;
+            color: var(--muted); margin: 0 0 8px; letter-spacing: -.01em; }
+  .hero h1 { font-family: var(--sans); font-size: clamp(37px, 6vw, 72px); font-weight: 800;
+             letter-spacing: -.035em; line-height: 1.04; margin: 0; max-width: 17ch; }
+  .hero-sub { margin: 24px 0 0; font-size: 1.06em; color: var(--ink2); max-width: 60ch; }
+
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; align-items: center; }
+  .btn { display: inline-block; padding: 13px 26px; border-radius: 8px;
+         font-family: var(--sans); font-weight: 700; font-size: 16px;
+         text-decoration: none; border: 1px solid var(--ink); transition: transform .15s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .textlink { font-family: var(--sans); font-size: 16px; font-weight: 600; color: var(--ink2);
+              text-decoration: underline; text-underline-offset: 4px;
+              text-decoration-thickness: 1px; }
+  .textlink:hover { color: var(--ink); }
+
+  .claims { display: grid; grid-template-columns: 1fr; gap: 0 52px; margin: 50px 0 0; }
+  @media (min-width: 760px) { .claims { grid-template-columns: 1fr 1fr; } }
+  .claim { padding: 18px 0 20px; border-top: 1px solid var(--rule); }
+  .claim:first-child, .claim:nth-child(2) { border-top: 2px solid var(--ink); }
+  @media (max-width: 759px) { .claim:nth-child(2) { border-top: 1px solid var(--rule); } }
+  .claim .n { font-family: var(--sans); font-weight: 800; font-size: 40px; line-height: 1.05;
+              color: var(--accent); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .claim h3 { margin: 0 0 6px; }
+  .claim p { margin: 9px 0 0; font-size: 15.5px; color: var(--ink2); line-height: 1.5;
+             font-family: var(--sans); }
+
+  .route { position: relative; padding-bottom: 30px; }
+  .route::before { content: ""; position: absolute; left: calc(var(--spine) / 2); top: 8px;
+                   bottom: 80px; width: 2px; background: var(--rule); }
+  .stop { position: relative; padding: 0 0 76px var(--spine); }
+  .stop::before { content: ""; position: absolute; left: calc(var(--spine) / 2 - 7px); top: 7px;
+                  width: 16px; height: 16px; border-radius: 50%;
+                  background: var(--paper); border: 2px solid var(--ink); box-sizing: border-box; }
+  .stop--key::before { background: var(--accent); border-color: var(--accent); }
+  .stop--warn::before { background: var(--accent2); border-color: var(--accent2); }
+  .stop--end::before { background: var(--ink); }
+
+  h2 { font-family: var(--sans); font-size: clamp(27px, 3.7vw, 38px); font-weight: 800;
+       letter-spacing: -.027em; line-height: 1.13; margin: 12px 0 16px; max-width: 19ch; }
+  h3 { font-family: var(--sans); font-size: 17px; font-weight: 700; margin: 0 0 7px;
+       letter-spacing: -.012em; }
+  .stop p { margin: 0 0 17px; max-width: 60ch; color: var(--ink2); }
+
+  .bignum { font-family: var(--sans); font-weight: 800; font-size: clamp(74px, 10vw, 128px);
+            line-height: .86; letter-spacing: -.05em; margin: 6px 0 4px; color: var(--accent);
+            font-variant-numeric: tabular-nums; }
+  .bignum-note { font-family: var(--sans); font-size: 16px; color: var(--muted); margin: 0 0 20px; }
+
+  /* A white-background chart would glow in dark mode; the plate makes it read
+     as a deliberately printed page instead. */
+  figure { margin: 28px 0 0; }
+  .plate { background: var(--plate); border: 1px solid var(--rule); border-radius: 10px;
+           padding: 14px; box-shadow: var(--shadow); overflow: hidden; }
+  .plate img { border-radius: 4px; }
+  .plate--flush { padding: 0; }
+  .shot { border-radius: 10px; border: 1px solid var(--rule); box-shadow: var(--shadow);
+          overflow: hidden; background: var(--card); }
+  /* min() so the cap never exceeds the column on a phone */
+  .shot--narrow { max-width: min(430px, 100%); }
+  figcaption { margin-top: 11px; font-family: var(--sans); font-size: 14.5px;
+               color: var(--muted); line-height: 1.5; }
+  .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+            gap: 22px; margin-top: 28px; }
+  .panels figure { margin: 0; }
+
+  .pull { margin: 30px 0 0; padding: 20px 25px; border-left: 3px solid var(--accent);
+          background: color-mix(in srgb, var(--accent) 7%, transparent);
+          border-radius: 0 8px 8px 0; }
+  .pull p { margin: 0 0 9px; color: var(--ink); max-width: none; }
+  .pull p:last-of-type { margin: 0; }
+  .pull .who { font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+               text-transform: uppercase; color: var(--muted); display: block; margin-top: 9px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(238px, 1fr));
+          gap: 1px; margin-top: 28px; background: var(--rule);
+          border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+  .cell { background: var(--paper); padding: 22px 20px; }
+  .cell p { font-size: 15px; margin: 0; color: var(--ink2); max-width: none;
+            line-height: 1.55; font-family: var(--sans); }
+
+  /* results tables: scroll inside their own box, never the page */
+  .tablewrap { margin-top: 26px; overflow-x: auto; border: 1px solid var(--rule);
+               border-radius: 10px; background: var(--card); }
+  table { border-collapse: collapse; width: 100%; min-width: 480px;
+          font-family: var(--sans); font-size: 15.5px; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--rule); }
+  th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+       text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td { color: var(--ink2); font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .win td { color: var(--ink); font-weight: 700;
+            background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+  /* real terminal output, quoted verbatim */
+  .term { margin-top: 26px; background: #14141f; color: #e6e3da; border-radius: 10px;
+          padding: 18px 20px; overflow-x: auto; box-shadow: var(--shadow);
+          border: 1px solid #2a2a3a; }
+  .term pre { margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.62;
+              white-space: pre; }
+  .term .c { color: #9aa08f; }
+  .term .g { color: #7fd18f; }
+  .term .y { color: #E3BC5E; }
+
+  .specs { margin-top: 26px; border-top: 1px solid var(--rule); }
+  .spec { display: grid; grid-template-columns: 1fr; gap: 2px;
+          padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  @media (min-width: 700px) { .spec { grid-template-columns: 178px 1fr; gap: 24px; } }
+  .spec dt { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em;
+             text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .spec dd { margin: 0; font-size: 16px; color: var(--ink2); font-family: var(--sans); }
+
+  .close { padding: 6px 0 80px var(--spine); position: relative; }
+  .close h2 { max-width: 20ch; }
+  footer { border-top: 1px solid var(--rule); padding: 28px 0 60px;
+           font-family: var(--sans); font-size: 14.5px; color: var(--muted); }
+  footer a { color: var(--ink2); }
+  footer p { margin: 0 0 8px; }
+
+  @media (max-width: 640px) {
+    :root { --spine: 38px; }
+    .hero { padding: 36px 0 46px; }
+    .stop { padding-bottom: 58px; }
+    .plate { padding: 9px; }
+    .term { padding: 14px 14px; }
+    .term pre { font-size: 11.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="logo"><span class="dot" aria-hidden="true"></span>EPUB → Audiobook</div>
+    <div class="tagline">any book, read aloud and highlighted</div>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Plenty of books you own will never be recorded.</p>
+    <h1>Record them yourself, for nothing, in a voice you can stand.</h1>
+
+    <p class="hero-sub">
+      Point it at any <code>.epub</code> and get a folder of clean, chapter-named
+      audio files. Then <strong>read along while it plays</strong>, with the current
+      sentence highlighted in time using the speech engine's own word timings. It
+      handles <strong>English, Mandarin and Cantonese</strong>, runs entirely on
+      your own machine, needs no API key, and costs nothing.
+    </p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app</a>
+      <a class="textlink" href="../">or the quick tour</a>
+    </div>
+
+    <div class="claims">
+      <div class="claim">
+        <div class="n">$0</div>
+        <p>Microsoft <code>edge-tts</code> neural voices, with no API key and no
+           per-character billing.</p>
+      </div>
+      <div class="claim">
+        <div class="n">3</div>
+        <p>languages, including Cantonese — with the sentence splitting and font
+           handling each one actually needs.</p>
+      </div>
+      <div class="claim">
+        <div class="n">Resumable</div>
+        <p>Each chapter is written atomically. Re-run after a crash and it skips
+           what is already done.</p>
+      </div>
+      <div class="claim">
+        <div class="n">.mp3 or .m4b</div>
+        <p>Per-chapter files with ID3 tags and cover art, or one audiobook file
+           with chapter markers.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+<div class="route">
+
+  <section class="stop stop--key">
+    <p class="eyebrow">↓ the first thing it does</p>
+    <h2>It finds the chapters, and flags the junk</h2>
+    <p>
+      Before synthesising anything it parses the book and shows you what it found.
+      This is a real run against a 45,000-word book — note that it separates actual
+      chapters from front and back matter, estimates the finished runtime, and
+      works out how many parts each chapter needs:
+    </p>
+    <div class="term">
+<pre>$ python "App V6/epub_to_audiobook_v6.py" --list "What I Talk About When I Talk About Running.epub"
+
+<span class="c">[*]</span> Loading: What I Talk About When I Talk About Running.epub
+    Title : What I Talk About When I Talk About Running
+    Author: Haruki Murakami
+    Voice : en-US-GuyNeural   Rate: +0%   Subs: on
+
+<span class="c">[*]</span> <span class="g">14 chapters</span>  -  ~45,646 words  -  <span class="g">~5h 4m estimated</span>  -  ~12 min/part
+
+     1  Contents                          ~    95 w  (1 file) <span class="y">[junk?]</span>
+     2  Foreword                          ~   751 w  (1 file)
+     3  Chapter One                       ~ 5,326 w  (3 parts)
+     4  Chapter Two                       ~ 6,294 w  (4 parts)
+     5  Chapter Three                     ~ 5,281 w  (3 parts)
+     6  Chapter Four                      ~ 4,817 w  (3 parts)
+     7  Chapter Five                      ~ 3,679 w  (2 parts)
+     8  Chapter Six                       ~ 4,990 w  (3 parts)
+     9  Chapter Seven                     ~ 3,133 w  (2 parts)
+    10  Chapter Eight                     ~ 4,002 w  (2 parts)
+    11  Chapter Nine                      ~ 5,832 w  (3 parts)
+    12  Afterword                         ~ 1,221 w  (1 file)
+    13  Also by Haruki Murakami           ~    62 w  (1 file) <span class="y">[junk?]</span>
+    14  Copyright                         ~   163 w  (1 file) <span class="y">[junk?]</span>
+
+(dry run — nothing synthesised)</pre>
+    </div>
+    <p style="margin-top:22px">
+      The <code>[junk?]</code> flags are the useful part. Contents, "Also by", and
+      the copyright page are marked so you can untick them in one click instead of
+      finding out three hours later that your audiobook opens with a list of
+      trademarks.
+    </p>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">↓ the reason to build this rather than buy one</p>
+    <h2>Read along, in sync</h2>
+    <p>
+      The player highlights each sentence as it is spoken, driven by the timing data
+      <code>edge-tts</code> emits alongside the audio rather than by guessing from
+      character counts. For a language learner that is the whole feature: you hear
+      the sentence and see exactly which words are producing the sounds.
+    </p>
+    <p>
+      It is also why the Chinese support took real work. Splitting on <code>。！？；</code>
+      rather than on periods, estimating length by characters rather than words,
+      and picking the right font and voice automatically are each small things that
+      the naive version gets wrong in a way that makes the highlight drift out of
+      sync within a paragraph.
+    </p>
+    <div class="grid">
+      <div class="cell">
+        <h3>Chapter detection</h3>
+        <p>Extracts the text, finds chapter boundaries, and skips cover, copyright
+           and index pages.</p>
+      </div>
+      <div class="cell">
+        <h3>Crash-safe</h3>
+        <p>Each chapter is written atomically, so an interrupted run leaves no
+           half-file and a re-run resumes.</p>
+      </div>
+      <div class="cell">
+        <h3>Player conveniences</h3>
+        <p>Light and dark themes, adjustable speed, font and size, auto-advance,
+           resume, a sleep timer and keyboard shortcuts.</p>
+      </div>
+      <div class="cell">
+        <h3>Export options</h3>
+        <p>Per-chapter <code>.mp3</code> with ID3 tags and embedded cover, or a
+           single <code>.m4b</code> with chapter markers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop">
+    <p class="eyebrow">↓ six versions of one lesson</p>
+    <h2>V6 is entirely about ffmpeg not being where you left it</h2>
+    <p>
+      The version history is a fair summary of what building a desktop tool is
+      actually like. V1 was the pipeline. V2 added the timing sidecars that make the
+      read-along possible. V3 and V4 were the interface. V5 was Chinese.
+    </p>
+    <p>
+      <strong>V6 is almost entirely robust ffmpeg discovery</strong>, so that speed
+      control and <code>.m4b</code> export work on a fresh machine without the user
+      editing their PATH — with actionable errors when they still do not, and the
+      option to ship ffmpeg next to the app. That is an unglamorous release, and it
+      is the one that decides whether anybody else can run the thing.
+    </p>
+  </section>
+
+  <section class="stop stop--warn">
+    <p class="eyebrow">↓ what you should know</p>
+    <h2>Desktop only, and you bring the books</h2>
+    <p>
+      This is a Python desktop app with a Tkinter interface, not a web app. There is
+      nothing to click into from a browser — you install a few dependencies and run
+      it, with launchers provided for Windows and macOS and a script that builds a
+      double-clickable macOS <code>.app</code>.
+    </p>
+    <p>
+      It also ships <strong>code only</strong>. No books, no audio. Synthesis needs
+      the internet, because the voices are Microsoft's hosted neural ones; ffmpeg is
+      optional and only needed for speed control and single-file export.
+    </p>
+    <p>
+      Point it at books you own or public-domain titles. The repository contains no
+      copyrighted text and the output is for personal use.
+    </p>
+    <p>
+      <em>A note on this page: there are no screenshots of the player here yet. The
+      interface is real and the CLI output above is a genuine run, but a capture of
+      the desktop window was blocked by a macOS screen-recording permission prompt
+      and has not been retaken.</em>
+    </p>
+  </section>
+
+  <section class="stop stop--end">
+    <p class="eyebrow">Finish · what it is built on</p>
+    <h2>Free, local, and dependency-light</h2>
+    <dl class="specs">
+      <div class="spec"><dt>Voices</dt><dd>Microsoft <code>edge-tts</code> neural voices — no API key, no cost</dd></div>
+      <div class="spec"><dt>Languages</dt><dd>English, Mandarin (Mainland and Taiwan), Cantonese (Hong Kong)</dd></div>
+      <div class="spec"><dt>Read-along</dt><dd>Driven by <code>edge-tts</code>'s own word-timing data, not estimated</dd></div>
+      <div class="spec"><dt>EPUB parsing</dt><dd><code>ebooklib</code> + BeautifulSoup</dd></div>
+      <div class="spec"><dt>Playback</dt><dd><code>pygame</code></dd></div>
+      <div class="spec"><dt>Optional</dt><dd><code>mutagen</code> for tags and cover art; <code>ffmpeg</code> for speed control and <code>.m4b</code></dd></div>
+      <div class="spec"><dt>Interfaces</dt><dd>A graphical app with the read-along player, and a command-line version</dd></div>
+      <div class="spec"><dt>Related</dt><dd><a href="https://lyhjeremy.github.io/podcastify/">Podcastify</a> takes the same source text and stages it for two voices instead of one</dd></div>
+    </dl>
+  </section>
+
+</div>
+</div>
+
+<div class="wrap">
+  <section class="close">
+    <h2>Make the audiobook nobody recorded</h2>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app</a>
+      <a class="textlink" href="../">or the quick tour</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      EPUB → Audiobook ·
+      <a href="../">Showcase</a> ·
+      <a href="https://github.com/lyhjeremy/epub-to-audiobook">Source</a> ·
+      MIT © 2026 Jeremy Lee
+    </p>
+    <p>For books you own or that are in the public domain. No books or audio are shipped.</p>
+  </footer>
+</div>
+</body>
+</html>
