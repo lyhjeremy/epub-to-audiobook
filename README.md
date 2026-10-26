@@ -1,98 +1,91 @@
-# EPUB → Audiobook
+# EPUB to Audiobook
+
+A Python desktop app that turns any `.epub` into chapter-named audio with free neural voices, and highlights each sentence on screen as it plays. English, Mandarin and Cantonese.
+
+[Live site](https://lyhjeremy.github.io/epub-to-audiobook/) · [Write-up](https://lyhjeremy.github.io/epub-to-audiobook/overview/)
 
 Design and copy follow [these standards](https://github.com/lyhjeremy/lyhjeremy/blob/main/DESIGN_STANDARDS.md).
 
-Turn any `.epub` book into a folder of clean, chapter-named audio files, and
-**read along** while it plays, with the current sentence highlighted in sync.
-Free, runs on your own computer, and supports **English and Chinese**
-(Mandarin & Cantonese).
+## Sample output
 
-> **Non-technical overview:** see the showcase page →
-> https://lyhjeremy.github.io/epub-to-audiobook/
-> **Product overview:** https://lyhjeremy.github.io/epub-to-audiobook/overview/
+A `--list` dry run of the V6 command-line tool on an EPUB of Haruki Murakami's *What I Talk About When I Talk About Running* (the book is not in the repo):
 
----
+```
+[*] 14 chapters  -  ~45,646 words  -  ~5h 4m estimated  -  ~12 min/part
+
+     1  Contents                          ~    95 w  (1 file) [junk?]
+     2  Foreword                          ~   751 w  (1 file)
+     3  Chapter One                       ~ 5,326 w  (3 parts)
+     4  Chapter Two                       ~ 6,294 w  (4 parts)
+     ...
+    12  Afterword                         ~ 1,221 w  (1 file)
+    13  Also by Haruki Murakami           ~    62 w  (1 file) [junk?]
+    14  Copyright                         ~   163 w  (1 file) [junk?]
+```
+
+There are no screenshots of the GUI yet: capturing the window was blocked by a macOS screen-recording permission prompt.
 
 ## What it does
 
-- **Reads EPUBs.** Extracts the text, detects chapters, and skips front/back
-  matter (cover, copyright, index).
-- **Natural neural voices** via Microsoft `edge-tts` (no API key, no cost).
-- **English + Chinese.** Mandarin (Mainland / Taiwan) and Cantonese (Hong
-  Kong), with correct sentence splitting (。！？；) and Chinese fonts.
-- **Read-along player.** Highlights each sentence in time with the audio,
-  using `edge-tts`'s own word-timing data.
-- **Crash-safe & resumable.** Writes each chapter atomically and skips
-  chapters already done if you re-run.
-- **Modern GUI.** Light/dark themes, adjustable speed/font/size, auto-advance,
-  resume, sleep timer, and keyboard shortcuts.
-- **Export options.** Per-chapter `.mp3` (with optional ID3 tags + embedded
-  cover) or a single `.m4b` audiobook with chapter markers (via `ffmpeg`).
+- Extracts the text with ebooklib and BeautifulSoup, detects chapters, and flags front and back matter (contents, copyright, "Also by") for you to untick. `--skip-junk` drops them on the command line.
+- Renders each chapter with Microsoft edge-tts neural voices (no API key), split into parts of about 12 minutes. Runtime estimates use about 900 characters a minute for English and 300 for Chinese.
+- Writes each chapter to a `.part` file and renames it into place with `os.replace`, so a crash leaves no half-file and a re-run skips finished chapters.
+- Plays the book in a read-along player that highlights each sentence. The highlight units are edge-tts's own boundary events, stored in a `.subs.json` sidecar beside each MP3.
+- Supports Mandarin (zh-CN, zh-TW) and Cantonese (zh-HK) voices, with Chinese sentence splitting (。！？；) and PingFang fonts.
+- Exports per-chapter MP3s with ID3 tags and cover art (mutagen), or one `.m4b` with chapter markers (ffmpeg). Playback speed uses ffmpeg's pitch-preserving `atempo`.
 
-## Repository layout
+## The read-along drift fix
 
-This repo contains **code only**, and ships just the **latest version (V6)**.
-The `.epub` source books and the generated `.mp3` / `.m4b` audio are intentionally
-**not** included (third-party copyright and file size), point the app at your own EPUBs.
+V2 split each chapter into sentences with its own splitter and matched them to edge-tts's boundary events by greedy text matching. The counts rarely agreed (86 timed segments against 77 sentences in one part), so the highlight drifted further out of sync through a track. Since V3 the player uses the boundary events directly as the highlight units, made contiguous so the highlight never flickers, and stores the real audio duration for an exact seek bar.
 
-```
-App V6/                          The app (latest version, self-contained)
-  epub_to_audiobook_gui_v6.py      The app: converter + read-along player
-  epub_to_audiobook_v6.py        ⌨  Command-line version
-  audiobook_engine_v6.py           Engine: accurate timing + speed rendering
-  audiobook_engine.py              Base engine (CJK-aware + ffmpeg locator)
-  README_V6.md                   Notes for this version
-  Launch Audiobook App.bat       Windows launcher
-  Launch Audiobook App.command   macOS launcher
-  Make Mac App.command           Builds a double-clickable macOS .app
-```
+## Version history
 
-## Quick start (V6)
+| Version | Change |
+|---|---|
+| V1 | Text extraction, chapter detection, edge-tts synthesis, atomic writes, resume |
+| V2 | Shared engine, timing sidecars, smarter chapter detection, ID3 tags and `.m4b` export |
+| V3–V4 | Read-along timed from edge-tts boundary events, speed control, modern UI (themes, font and size, auto-advance, resume, sleep timer, shortcuts) |
+| V5 | Mandarin and Cantonese voices, Chinese-aware splitting, estimates and fonts |
+| V6 | ffmpeg discovery off PATH (winget, Chocolatey, Scoop, Homebrew, a bundled folder or `FFMPEG_DIR`) with OS-specific install hints |
+
+This repo ships only V6.
+
+## Limitations
+
+- Desktop only (Tkinter); nothing runs in a browser.
+- Synthesis needs an internet connection, since edge-tts is a hosted Microsoft service. Keep `edge-tts` upgraded: it is an unofficial endpoint and older versions stop working.
+- Code only. The repo ships no books or audio; convert books you own or public-domain titles, for personal use.
+
+## How to run
 
 ```bash
-# 1. Install dependencies
 pip install edge-tts ebooklib beautifulsoup4 pygame
-pip install mutagen            # optional: ID3 tags + cover art on each MP3
+pip install mutagen            # optional: ID3 tags and cover art
 
-# 2. (Optional) install ffmpeg: needed only for speed control and single-file .m4b
-#    Windows:  winget install Gyan.FFmpeg
-#    macOS:    brew install ffmpeg
-#    Linux:    sudo apt install ffmpeg
-#    V6 auto-discovers ffmpeg even when it isn't on your PATH.
+# optional, for speed control and .m4b:
+#   macOS:   brew install ffmpeg
+#   Windows: winget install Gyan.FFmpeg
+#   Linux:   sudo apt install ffmpeg
 
-# 3. Run the app
-python "App V6/epub_to_audiobook_gui_v6.py"      # graphical, with read-along
-python "App V6/epub_to_audiobook_v6.py" book.epub  # command line
+python "App V6/epub_to_audiobook_gui_v6.py"                 # GUI with read-along
+python "App V6/epub_to_audiobook_v6.py" book.epub           # command line
+python "App V6/epub_to_audiobook_v6.py" --list book.epub    # dry run: chapters and estimates
 ```
 
-On Windows you can also double-click **`App V6/Launch Audiobook App.bat`**; on
-macOS, **`Launch Audiobook App.command`** (or build a real app with
-**`Make Mac App.command`**).
+On Windows you can double-click `App V6/Launch Audiobook App.bat`; on macOS, `Launch Audiobook App.command`, or build a real app with `Make Mac App.command`.
 
-## How it evolved
+## Repo layout
 
-Built over six iterations; this repo ships the latest, **V6**, which includes
-everything below:
+| Path | What it is |
+|---|---|
+| `App V6/epub_to_audiobook_gui_v6.py` | GUI: converter and read-along player |
+| `App V6/epub_to_audiobook_v6.py` | Command-line version |
+| `App V6/audiobook_engine_v6.py` | Boundary-event timing and speed rendering |
+| `App V6/audiobook_engine.py` | Base engine: extraction, chapters, voices, tags, `.m4b`, ffmpeg locator |
+| `App V6/README_V6.md` | Notes for this version |
+| `App V6/*.command`, `*.bat` | Launchers and the macOS app builder |
 
-- **V1.** Core pipeline: text extraction, chapter detection, `edge-tts`
-  synthesis, crash-safe atomic writes, resume-on-rerun.
-- **V2.** Engine factored into a shared module; sentence-level timing sidecars
-  for the read-along player; smarter chapter detection; ID3 tags + `.m4b` export.
-- **V3 / V4.** Modern UI: light/dark, text-first read-along, real line spacing,
-  page-turn scrolling, speed/font/size/highlight, auto-advance, resume, sleep
-  timer, keyboard shortcuts, and an **Open folder…** button.
-- **V5**, **Chinese support**: Mandarin (Mainland/Taiwan) and Cantonese (Hong
-  Kong) voices, Chinese-aware sentence splitting, character-based estimates,
-  accurate Chinese read-along, and auto font/voice selection.
-- **V6**, **robust ffmpeg discovery** so speed control and `.m4b` work on a
-  fresh machine without manual PATH setup, with actionable install errors and a
-  "ship ffmpeg next to the app" option.
-
-## A note on content
-
-This tool is for converting books **you own or that are in the public domain**
-into audio for your **personal use**. The repository ships no copyrighted books
-or audio; you supply your own EPUB files.
+Stack: Python, edge-tts, ebooklib, BeautifulSoup, Tkinter, pygame, mutagen, ffmpeg.
 
 ## License
 

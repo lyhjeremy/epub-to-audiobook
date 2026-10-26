@@ -3,55 +3,57 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>EPUB → Audiobook: turn any book into audio, and read along in sync</title>
-<meta name="description" content="Converts any EPUB into chapter-named audio with natural neural voices, then highlights each sentence in time with the playback. English, Mandarin and Cantonese. Free, local, resumable." />
-<meta name="theme-color" content="#EDEDE7" />
-<meta property="og:title" content="EPUB → Audiobook" />
-<meta property="og:description" content="Chapter detection, neural voices, and a read-along player that highlights the sentence you are hearing. No API key, no cost." />
+<title>EPUB to Audiobook: turn any book into chapter audio and read along in sync</title>
+<meta name="description" content="A Python desktop app that converts an EPUB into chapter-named MP3s or an M4B with free edge-tts neural voices, then highlights each sentence as it plays using edge-tts's own timing events. English, Mandarin and Cantonese." />
+<meta name="theme-color" content="#EEEDE6" />
+<meta property="og:title" content="EPUB to Audiobook" />
+<meta property="og:description" content="Chapter detection with front-matter flags, free neural voices, and a read-along player timed by the speech engine itself." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://lyhjeremy.github.io/epub-to-audiobook/overview/" />
+<link href="" rel="stylesheet" />
 <style>
-@font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-400.woff2")format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-600.woff2")format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-400.woff2")format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-600.woff2")format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"IBM Plex Mono";src:url("../fonts/IBMPlexMono-400.woff2")format("woff2");font-weight:400;font-display:swap}
-
   :root {
-    --paper: #EDEDE7;
-    --card: #F5F5F0;
-    --plate: #F5F5F0;
-    --ink: #1C1E1B;
-    --ink2: #3d3d55;
-    --muted: #52564E;
-    --rule: #C6C7BF;
-    --accent: #2C5852;
-    --accent2: #7A5A1E;
-    --link: #8C3A1E;
-    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-    --sans: 'Source Sans 3', -apple-system, system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
-    --shadow: 0 1px 2px rgba(26,26,46,.05), 0 10px 34px rgba(26,26,46,.07);
+    --paper: #EEEDE6;
+    --card: #F6F5EF;
+    --plate: #F6F5EF;
+    --ink: #1B1E24;
+    --ink2: #4F5560;
+    --muted: #4F5560;
+    --rule: #C8C9C2;
+    --accent: #9E3A2C;
+    --accent2: #284B73;
+    --link: #9E3A2C;
+    --serif: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    --display: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --edge: #757A80;
     --spine:  92px;
     --col:    min(100% - 2.6rem, 62rem);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --paper: #14141f;
-      --card: #1c1c2a;
-      --plate: #f7f4ec;
-      --ink: #F2EFE6;
-      --ink2: #C9C4B6;
-      --muted: #918B7D;
-      --rule: #33313f;
-      --accent: #A78BFA;
-      --accent2: #E3BC5E;
-      --link: #22D3EE;
-      --shadow: 0 1px 2px rgba(0,0,0,.32), 0 10px 34px rgba(0,0,0,.4);
+      --paper: #181A1F;
+      --card: #21242A;
+      --plate: #21242A;
+      --ink: #E5E6E2;
+      --ink2: #A5AAB3;
+      --muted: #A5AAB3;
+      --rule: #3A3E45;
+      --accent: #D88E80;
+      --accent2: #86A9D6;
+      --link: #D88E80;
+      --edge: #6B7079;
     }
   }
 
-  * { box-sizing: border-box; }
+  @font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-400.woff2")format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-600.woff2")format("woff2");font-weight:600;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-400.woff2")format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-600.woff2")format("woff2");font-weight:600;font-display:swap}
+  @font-face{font-family:"IBM Plex Mono";src:url("../fonts/IBMPlexMono-400.woff2")format("woff2");font-weight:400;font-display:swap}
+
+  * { box-sizing: border-box; border-radius: 0; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--paper); color: var(--ink);
@@ -210,52 +212,89 @@
     html { scroll-behavior: auto; }
     .btn { }
   }
+  @font-face{font-family:"Newsreader";src:url("../fonts/Newsreader-600.woff2")format("woff2");font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:"Newsreader";src:url("../fonts/Newsreader-400i.woff2")format("woff2");font-weight:400;font-style:italic;font-display:swap}
 
+  .btn:hover { transform: none; background: var(--accent); border-color: var(--accent); color: var(--paper); }
+  .pull { border: 1px solid var(--edge); border-left: 1px solid var(--edge); background: transparent; }
+  .term { background: var(--card); color: var(--ink); border: 1px solid var(--rule); }
+  .term .c { color: var(--muted); } .term .g { color: var(--accent2); } .term .y { color: var(--accent); }
+  .logo, .hero h1, h2, .claim .n, .bignum { font-family: var(--display); }
+
+  /* Language: a well-set book. Newsreader display, italic glosses, notes in the margin. */
+  .logo { font-weight: 600; font-size: 23px; letter-spacing: 0; }
+  .hero h1 { font-weight: 600; font-size: clamp(42px, 6.6vw, 80px); letter-spacing: -.015em; line-height: 1.02; max-width: 16ch; }
+  .kicker { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(20px, 2.3vw, 25px); color: var(--accent2); }
+  h2 { font-weight: 600; letter-spacing: -.01em; font-size: clamp(29px, 3.9vw, 40px); }
+  .claim, .claim:first-child, .claim:nth-child(2) { border-top: 1px solid var(--rule); }
+  .claim .n { font-weight: 600; font-size: 44px; letter-spacing: -.01em; color: var(--accent2); }
+  .bignum { font-weight: 600; color: var(--accent2); }
+  .eyebrow { font-family: var(--display); font-style: italic; text-transform: none; letter-spacing: 0;
+             font-size: 18px; font-weight: 400; color: var(--accent); }
+  :root { --spine: 0px; }
+  .route::before, .stop::before { display: none; }
+  .stop { padding-left: 0; }
+  @media (min-width: 980px) {
+    .stop { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: 40px; }
+    .stop > * { grid-column: 2; }
+    .stop > .eyebrow { grid-column: 1; grid-row: 1 / span 2; text-align: right; padding-top: 14px;
+                       border-top: 1px solid var(--rule); }
+  }
+
+
+  /* Signature: the drift fix, set as a two-line comparison. */
+  .drift { margin: 26px 0 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); }
+  .drift div { display: grid; grid-template-columns: 5.5rem minmax(0,1fr); gap: 0 18px; padding: 12px 0; align-items: baseline; }
+  .drift div + div { border-top: 1px solid var(--rule); }
+  .drift b { font-family: var(--display); font-weight: 600; font-size: 34px; line-height: 1; color: var(--accent2); }
+  .drift div:first-child b { color: var(--accent); }
+  .drift span { font-family: var(--display); font-style: italic; font-size: 19px; color: var(--ink2); line-height: 1.4; }
+  .term-cap { margin: 11px 0 0; font-family: var(--sans); font-size: 14.5px; color: var(--muted); line-height: 1.5; max-width: 64ch; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="masthead">
-    <div class="logo"><span class="dot" aria-hidden="true"></span>EPUB → Audiobook</div>
+    <div class="logo">EPUB to Audiobook</div>
     <div class="tagline">any book, read aloud and highlighted</div>
   </header>
 
   <section class="hero">
-    <p class="kicker">Plenty of books you own will never be recorded.</p>
-    <h1>Record them yourself, for nothing, in a voice you can stand.</h1>
+    <p class="kicker">A free desktop app, English, Mandarin and Cantonese</p>
+    <h1>Turn any EPUB into an audiobook and read along as it plays.</h1>
 
     <p class="hero-sub">
-      Point it at any <code>.epub</code> and get a folder of clean, chapter-named
-      audio files. Then <strong>read along while it plays</strong>, with the current
-      sentence highlighted in time using the speech engine's own word timings. It
-      handles <strong>English, Mandarin and Cantonese</strong>, runs entirely on
-      your own machine, needs no API key, and costs nothing.
+      Point it at a <code>.epub</code> and it detects the chapters, flags front and
+      back matter, and renders chapter-named MP3s (or one <code>.m4b</code> with
+      chapter markers) with Microsoft's free edge-tts neural voices. The player
+      then highlights each sentence as it is spoken, timed by the boundary events
+      edge-tts emits with the audio. No API key and no cost.
     </p>
 
     <div class="cta-row">
       <a class="btn btn-primary" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app</a>
-      <a class="textlink" href="../">or the quick tour</a>
+      <a class="textlink" href="../">The short tour</a>
     </div>
 
     <div class="claims">
       <div class="claim">
-        <div class="n">$0</div>
-        <p>Microsoft <code>edge-tts</code> neural voices, with no API key and no
-           per-character billing.</p>
+        <div class="n">14</div>
+        <p>sections found in a 45,646-word book, three flagged as likely junk
+           (contents, "Also by", copyright).</p>
+      </div>
+      <div class="claim">
+        <div class="n">~5h 4m</div>
+        <p>estimated runtime for that book, at about 900 characters a minute for
+           English (300 for Chinese).</p>
       </div>
       <div class="claim">
         <div class="n">3</div>
-        <p>languages, including Cantonese, with the sentence splitting and font
-           handling each one actually needs.</p>
+        <p>languages: English, Mandarin (Mainland and Taiwan voices) and Cantonese
+           (Hong Kong voices).</p>
       </div>
       <div class="claim">
-        <div class="n">Resumable</div>
-        <p>Each chapter is written atomically. Re-run after a crash and it skips
-           what is already done.</p>
-      </div>
-      <div class="claim">
-        <div class="n">.mp3 or .m4b</div>
-        <p>Per-chapter files with ID3 tags and cover art, or one audiobook file
+        <div class="n">.mp3 / .m4b</div>
+        <p>per-chapter files with ID3 tags and cover art, or one audiobook file
            with chapter markers.</p>
       </div>
     </div>
@@ -266,13 +305,12 @@
 <div class="route">
 
   <section class="stop stop--key">
-    <p class="eyebrow">↓ the first thing it does</p>
-    <h2>It finds the chapters, and flags the junk</h2>
+    <p class="eyebrow">Step one</p>
+    <h2>It finds the chapters and flags the junk</h2>
     <p>
-      Before synthesising anything it parses the book and shows you what it found.
-      This is a real run against a 45,000-word book. Note that it separates actual
-      chapters from front and back matter, estimates the finished runtime, and
-      works out how many parts each chapter needs:
+      Before synthesizing anything, <code>--list</code> parses the book and prints
+      what it found: real chapters, front and back matter, word counts, an
+      estimated runtime, and how many parts each chapter will be split into.
     </p>
     <div class="term">
 <pre>$ python "App V6/epub_to_audiobook_v6.py" --list "What I Talk About When I Talk About Running.epub"
@@ -301,109 +339,98 @@
 
 (dry run, nothing synthesised)</pre>
     </div>
+    <p class="term-cap">A real run of the V6 command-line tool on an EPUB of Haruki Murakami's memoir, which is not in the repo. The tool's last line prints an em dash, shown here as a comma.</p>
     <p style="margin-top:22px">
-      The <code>[junk?]</code> flags are the useful part. Contents, "Also by", and
-      the copyright page are marked so you can untick them in one click instead of
-      finding out three hours later that your audiobook opens with a list of
-      trademarks.
+      The <code>[junk?]</code> flags come from title and filename patterns plus a
+      minimum length. They are flags, never silent drops: the GUI lets you untick
+      them, and <code>--skip-junk</code> drops them on the command line.
     </p>
   </section>
 
   <section class="stop">
-    <p class="eyebrow">↓ the reason to build this rather than buy one</p>
-    <h2>Read along, in sync</h2>
+    <p class="eyebrow">Read-along</p>
+    <h2>Timed by the speech engine</h2>
     <p>
-      The player highlights each sentence as it is spoken, driven by the timing data
-      <code>edge-tts</code> emits alongside the audio rather than by guessing from
-      character counts. For a language learner that is the whole feature: you hear
-      the sentence and see exactly which words are producing the sounds.
+      V2 split each chapter into sentences with its own splitter, then matched those
+      sentences to edge-tts's boundary events by greedy text matching. The two
+      rarely produced the same number of segments, so the highlight drifted further
+      out of sync the longer a track ran.
     </p>
-    <p>
-      It is also why the Chinese support took real work. Splitting on <code>。！？；</code>
-      rather than on periods, estimating length by characters rather than words,
-      and picking the right font and voice automatically are each small things that
-      the naive version gets wrong in a way that makes the highlight drift out of
-      sync within a paragraph.
-    </p>
-    <div class="grid">
-      <div class="cell">
-        <h3>Chapter detection</h3>
-        <p>Extracts the text, finds chapter boundaries, and skips cover, copyright
-           and index pages.</p>
-      </div>
-      <div class="cell">
-        <h3>Crash-safe</h3>
-        <p>Each chapter is written atomically, so an interrupted run leaves no
-           half-file and a re-run resumes.</p>
-      </div>
-      <div class="cell">
-        <h3>Player conveniences</h3>
-        <p>Light and dark themes, adjustable speed, font and size, auto-advance,
-           resume, a sleep timer and keyboard shortcuts.</p>
-      </div>
-      <div class="cell">
-        <h3>Export options</h3>
-        <p>Per-chapter <code>.mp3</code> with ID3 tags and embedded cover, or a
-           single <code>.m4b</code> with chapter markers.</p>
-      </div>
+    <div class="drift">
+      <div><b>86</b><span>segments timed by edge-tts in one part</span></div>
+      <div><b>77</b><span>sentences from the app's own splitter for the same part</span></div>
     </div>
+    <p style="margin-top:22px">
+      Since V3 the player uses edge-tts's boundary events directly as the highlight
+      units, so each highlighted span is exactly the span the engine timed. Units
+      are made contiguous so the highlight never flickers between sentences, and
+      the real audio duration is stored for an exact seek bar. The timings live in
+      a <code>.subs.json</code> sidecar next to each MP3.
+    </p>
+    <p>
+      Chinese needed its own handling: splitting on 。！？；, sizing parts by
+      characters at about 300 a minute, and switching the reader to PingFang SC, HK
+      or TC. edge-tts's own Chinese sentence timing keeps Mandarin and Cantonese in
+      sync the same way.
+    </p>
+    <dl class="specs">
+      <div class="spec"><dt>Crash-safe</dt><dd>Each chapter renders to a <code>.part</code> file and is renamed into place with <code>os.replace</code>; a re-run skips finished chapters</dd></div>
+      <div class="spec"><dt>Speed</dt><dd>ffmpeg <code>atempo</code> renders a pitch-preserving copy at the chosen speed, cached</dd></div>
+      <div class="spec"><dt>Player</dt><dd>Light and dark themes, font, size and highlight settings, auto-advance, resume, a sleep timer, keyboard shortcuts</dd></div>
+      <div class="spec"><dt>Export</dt><dd>Per-chapter <code>.mp3</code> with ID3 tags and embedded cover (mutagen), or a single <code>.m4b</code> with chapter markers (ffmpeg)</dd></div>
+    </dl>
   </section>
 
   <section class="stop">
-    <p class="eyebrow">↓ six versions of one lesson</p>
-    <h2>V6 is entirely about ffmpeg not being where you left it</h2>
+    <p class="eyebrow">Six versions</p>
+    <h2>V6 is about finding ffmpeg</h2>
     <p>
-      The version history is a fair summary of what building a desktop tool is
-      actually like. V1 was the pipeline. V2 added the timing sidecars that make the
-      read-along possible. V3 and V4 were the interface. V5 was Chinese.
+      V1 was the pipeline: extraction, chapter detection, synthesis, atomic writes
+      and resume. V2 added the timing sidecars, tags and <code>.m4b</code>. V3 and
+      V4 were the interface and the drift fix. V5 added Chinese.
     </p>
     <p>
-      <strong>V6 is almost entirely robust ffmpeg discovery</strong>, so that speed
-      control and <code>.m4b</code> export work on a fresh machine without the user
-      editing their PATH, with actionable errors when they still do not, and the
-      option to ship ffmpeg next to the app. That is an unglamorous release, and it
-      is the one that decides whether anybody else can run the thing.
+      V6 is almost entirely ffmpeg discovery. It looks in the usual install
+      locations (winget, Chocolatey, Scoop, Homebrew, <code>/usr/bin</code>, a
+      bundled <code>ffmpeg/</code> folder, or <code>FFMPEG_DIR</code>) as well as
+      PATH, prints the exact install command for your OS when ffmpeg is missing, and
+      will use an ffmpeg shipped next to the app. Speed control and <code>.m4b</code>
+      export now work on a fresh machine.
     </p>
   </section>
 
   <section class="stop stop--warn">
-    <p class="eyebrow">↓ what you should know</p>
+    <p class="eyebrow">Limitations</p>
     <h2>Desktop only, and you bring the books</h2>
     <p>
-      This is a Python desktop app with a Tkinter interface, not a web app. There is
-      nothing to click into from a browser. You install a few dependencies and run
-      it, with launchers provided for Windows and macOS and a script that builds a
-      double-clickable macOS <code>.app</code>.
+      It is a Python desktop app with a Tkinter interface, so there is nothing to
+      try in a browser. Launchers are included for Windows and macOS, plus a script
+      that builds a double-clickable macOS <code>.app</code>.
     </p>
     <p>
-      It also ships <strong>code only</strong>. No books, no audio. Synthesis needs
-      the internet, because the voices are Microsoft's hosted neural ones; ffmpeg is
-      optional and only needed for speed control and single-file export.
+      Synthesis needs an internet connection, because the voices are Microsoft's
+      hosted edge-tts service. ffmpeg is optional and needed only for speed control
+      and <code>.m4b</code>. The repository ships code only, with no books or audio;
+      use books you own or public-domain titles, for personal listening.
     </p>
     <p>
-      Point it at books you own or public-domain titles. The repository contains no
-      copyrighted text and the output is for personal use.
-    </p>
-    <p>
-      <em>A note on this page: there are no screenshots of the player here yet. The
-      interface is real and the CLI output above is a genuine run, but a capture of
-      the desktop window was blocked by a macOS screen-recording permission prompt
-      and has not been retaken.</em>
+      There are no screenshots of the player on this page. A capture of the
+      desktop window was blocked by a macOS screen-recording permission prompt and
+      has not been retaken, so the command-line output above is the only captured
+      output shown.
     </p>
   </section>
 
   <section class="stop stop--end">
-    <p class="eyebrow">Finish · what it is built on</p>
-    <h2>Free, local, and dependency-light</h2>
+    <p class="eyebrow">Built with</p>
+    <h2>Free and local apart from the voices</h2>
     <dl class="specs">
-      <div class="spec"><dt>Voices</dt><dd>Microsoft <code>edge-tts</code> neural voices, no API key, no cost</dd></div>
-      <div class="spec"><dt>Languages</dt><dd>English, Mandarin (Mainland and Taiwan), Cantonese (Hong Kong)</dd></div>
-      <div class="spec"><dt>Read-along</dt><dd>Driven by <code>edge-tts</code>'s own word-timing data, not estimated</dd></div>
-      <div class="spec"><dt>EPUB parsing</dt><dd><code>ebooklib</code> + BeautifulSoup</dd></div>
-      <div class="spec"><dt>Playback</dt><dd><code>pygame</code></dd></div>
-      <div class="spec"><dt>Optional</dt><dd><code>mutagen</code> for tags and cover art; <code>ffmpeg</code> for speed control and <code>.m4b</code></dd></div>
-      <div class="spec"><dt>Interfaces</dt><dd>A graphical app with the read-along player, and a command-line version</dd></div>
-      <div class="spec"><dt>Related</dt><dd><a href="https://lyhjeremy.github.io/podcastify/">Podcastify</a> takes the same source text and stages it for two voices instead of one</dd></div>
+      <div class="spec"><dt>Voices</dt><dd>Microsoft edge-tts neural voices, no API key; default en-US-GuyNeural</dd></div>
+      <div class="spec"><dt>Languages</dt><dd>English, Mandarin (zh-CN, zh-TW), Cantonese (zh-HK)</dd></div>
+      <div class="spec"><dt>EPUB</dt><dd>ebooklib and BeautifulSoup</dd></div>
+      <div class="spec"><dt>Interface</dt><dd>Tkinter GUI with the read-along player, plus a command-line version; pygame for playback</dd></div>
+      <div class="spec"><dt>Optional</dt><dd>mutagen for tags and cover art; ffmpeg for speed control and <code>.m4b</code></dd></div>
+      <div class="spec"><dt>Related</dt><dd><a href="https://lyhjeremy.github.io/podcastify/">Podcastify</a> stages the same kind of source for two voices; the <a href="https://lyhjeremy.github.io/mandarin-learning-reader/">Mandarin Learning Reader</a> reuses this EPUB pipeline</dd></div>
     </dl>
   </section>
 
@@ -415,14 +442,14 @@
     <h2>Make the audiobook nobody recorded</h2>
     <div class="cta-row">
       <a class="btn btn-primary" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app</a>
-      <a class="textlink" href="../">or the quick tour</a>
+      <a class="textlink" href="../">The short tour</a>
     </div>
   </section>
 
   <footer>
     <p>
-      EPUB → Audiobook ·
-      <a href="../">Showcase</a> ·
+      EPUB to Audiobook ·
+      <a href="../">Tour</a> ·
       <a href="https://github.com/lyhjeremy/epub-to-audiobook">Source</a> ·
       MIT © 2026 Jeremy Lee
     </p>
