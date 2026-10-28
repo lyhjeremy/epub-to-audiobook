@@ -36,7 +36,7 @@ There are no screenshots of the GUI yet: capturing the window was blocked by a m
 
 ## The read-along drift fix
 
-V2 split each chapter into sentences with its own splitter and matched them to edge-tts's boundary events by greedy text matching. The counts rarely agreed (86 timed segments against 77 sentences in one part), so the highlight drifted further out of sync through a track. Since V3 the player uses the boundary events directly as the highlight units, made contiguous so the highlight never flickers, and stores the real audio duration for an exact seek bar.
+V2 split each chapter into sentences with its own splitter and matched them to edge-tts's boundary events by greedy text matching. The counts rarely agreed (86 timed segments against 77 sentences in one part), so the highlight drifted further out of sync through a track. Since V3 the player uses the boundary events directly as the highlight units, made contiguous so the highlight never flickers, and stores each file's audio duration for an exact seek bar.
 
 ## Version history
 
@@ -52,9 +52,9 @@ This repo ships only V6.
 
 ## Limitations
 
-- Desktop only (Tkinter); nothing runs in a browser.
+- Desktop only (Tkinter), so there is nothing to try in a browser.
 - Synthesis needs an internet connection, since edge-tts is a hosted Microsoft service. Keep `edge-tts` upgraded: it is an unofficial endpoint and older versions stop working.
-- Code only. The repo ships no books or audio; convert books you own or public-domain titles, for personal use.
+- The repo ships code only, without books or audio; convert books you own or public-domain titles, for personal use.
 
 ## How to run
 
@@ -72,7 +72,7 @@ python "App V6/epub_to_audiobook_v6.py" book.epub           # command line
 python "App V6/epub_to_audiobook_v6.py" --list book.epub    # dry run: chapters and estimates
 ```
 
-On Windows you can double-click `App V6/Launch Audiobook App.bat`; on macOS, `Launch Audiobook App.command`, or build a real app with `Make Mac App.command`.
+On Windows you can double-click `App V6/Launch Audiobook App.bat`; on macOS, `Launch Audiobook App.command`, or build a standalone app with `Make Mac App.command`.
 
 ## Repo layout
 

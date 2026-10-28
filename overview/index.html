@@ -268,7 +268,7 @@
       back matter, and renders chapter-named MP3s (or one <code>.m4b</code> with
       chapter markers) with Microsoft's free edge-tts neural voices. The player
       then highlights each sentence as it is spoken, timed by the boundary events
-      edge-tts emits with the audio. No API key and no cost.
+      edge-tts emits with the audio. It needs no API key and costs nothing to run.
     </p>
 
     <div class="cta-row">
@@ -309,7 +309,7 @@
     <h2>It finds the chapters and flags the junk</h2>
     <p>
       Before synthesizing anything, <code>--list</code> parses the book and prints
-      what it found: real chapters, front and back matter, word counts, an
+      what it found: chapters, front and back matter, word counts, an
       estimated runtime, and how many parts each chapter will be split into.
     </p>
     <div class="term">
@@ -339,11 +339,11 @@
 
 (dry run, nothing synthesised)</pre>
     </div>
-    <p class="term-cap">A real run of the V6 command-line tool on an EPUB of Haruki Murakami's memoir, which is not in the repo. The tool's last line prints an em dash, shown here as a comma.</p>
+    <p class="term-cap">Output of the V6 command-line tool on an EPUB of Haruki Murakami's memoir, which is not in the repo. The tool's last line prints an em dash, shown here as a comma.</p>
     <p style="margin-top:22px">
       The <code>[junk?]</code> flags come from title and filename patterns plus a
-      minimum length. They are flags, never silent drops: the GUI lets you untick
-      them, and <code>--skip-junk</code> drops them on the command line.
+      minimum length. Nothing is dropped silently; the GUI lets you untick flagged
+      sections, and <code>--skip-junk</code> drops them on the command line.
     </p>
   </section>
 
@@ -364,7 +364,7 @@
       Since V3 the player uses edge-tts's boundary events directly as the highlight
       units, so each highlighted span is exactly the span the engine timed. Units
       are made contiguous so the highlight never flickers between sentences, and
-      the real audio duration is stored for an exact seek bar. The timings live in
+      each file's audio duration is stored for an exact seek bar. The timings live in
       a <code>.subs.json</code> sidecar next to each MP3.
     </p>
     <p>
@@ -385,9 +385,9 @@
     <p class="eyebrow">Six versions</p>
     <h2>V6 is about finding ffmpeg</h2>
     <p>
-      V1 was the pipeline: extraction, chapter detection, synthesis, atomic writes
-      and resume. V2 added the timing sidecars, tags and <code>.m4b</code>. V3 and
-      V4 were the interface and the drift fix. V5 added Chinese.
+      V1 was the pipeline (extraction, chapter detection, synthesis, atomic writes
+      and resume), and V2 added the timing sidecars, tags and <code>.m4b</code>.
+      V3 and V4 brought the interface and the drift fix; V5 added Chinese.
     </p>
     <p>
       V6 is almost entirely ffmpeg discovery. It looks in the usual install
@@ -410,8 +410,7 @@
     <p>
       Synthesis needs an internet connection, because the voices are Microsoft's
       hosted edge-tts service. ffmpeg is optional and needed only for speed control
-      and <code>.m4b</code>. The repository ships code only, with no books or audio;
-      use books you own or public-domain titles, for personal listening.
+      and <code>.m4b</code>. The repository ships code only, without books or audio; use books you own or public-domain titles, for personal listening.
     </p>
     <p>
       There are no screenshots of the player on this page. A capture of the

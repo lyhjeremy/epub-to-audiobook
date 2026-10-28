@@ -1,13 +1,13 @@
 # EPUB → Audiobook **V6**
 
-Everything V5 does, **plus robust ffmpeg discovery** so the speed control and
-`.m4b` work on a fresh computer without manual PATH setup. V1–V5 are untouched,
-V6 lives in its own folder.
+Everything V5 does, plus a wider search for ffmpeg, so the speed control and
+`.m4b` export work on a fresh computer without manual PATH setup. V6 lives in
+its own folder; this repo does not include V1–V5.
 
 | File | What it is |
 |---|---|
 | `epub_to_audiobook_gui_v6.py` | The app, converter + read-along (English + Chinese) |
-| `epub_to_audiobook_v6.py` | ⌨ Command-line version |
+| `epub_to_audiobook_v6.py` | Command-line version |
 | `audiobook_engine_v6.py` | Engine: accurate timing + speed rendering |
 | `audiobook_engine.py` | Base engine (CJK-aware + ffmpeg locator) |
 
@@ -21,7 +21,7 @@ V6 lives in its own folder.
   ffmpeg off-PATH it adds it to the running process automatically, so the
   *"ffmpeg not found on PATH, needed for speed change"* error no longer appears
   just because the install hasn't propagated to PATH yet.
-- **Actionable errors.** If ffmpeg genuinely isn't installed, the speed/`.m4b`
+- **Actionable errors.** If ffmpeg isn't installed anywhere it looks, the speed/`.m4b`
   errors now tell you the exact command to install it for your OS.
 - **Ship-it option.** Drop `ffmpeg`/`ffprobe` (or a `bin/` folder containing
   them) next to the app and it'll use those, no system install required.
@@ -50,7 +50,7 @@ See [Setup](#setup) for the one-line ffmpeg install.
   **Cantonese** (and pick a `zh-HK` voice) if you want it read in Cantonese.
 
 Everything from V4 is unchanged: modern UI, Light/Dark, text-first read-along,
-real line spacing, page-turn scroll, speed/font/size/highlight, auto-advance,
+proper line spacing, page-turn scroll, speed/font/size/highlight, auto-advance,
 resume, sleep timer, keyboard shortcuts, and the **Open folder…** button.
 
 ---
@@ -107,7 +107,7 @@ $s.TargetPath = $pyw; $s.Arguments = '"epub_to_audiobook_gui_v6.py"'
 $s.WorkingDirectory = (Get-Location).Path; $s.IconLocation = "$pyw,0"; $s.Save()
 ```
 
-### macOS, recommended: build a real `.app` (one time)
+### macOS, recommended: build a standalone `.app` (one time)
 
 This gives you a normal double-click app with **no Terminal window** and no
 "unidentified developer" warning.
