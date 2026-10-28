@@ -250,6 +250,26 @@
   .drift div:first-child b { color: var(--accent); }
   .drift span { font-family: var(--display); font-style: italic; font-size: 19px; color: var(--ink2); line-height: 1.4; }
   .term-cap { margin: 11px 0 0; font-family: var(--sans); font-size: 14.5px; color: var(--muted); line-height: 1.5; max-width: 64ch; }
+
+  /* Read-along, replayed in the page from the engine's own sidecar. */
+  .ra { margin: 40px 0 0; border-top: 2px solid var(--ink); padding-top: 14px; }
+  .ra-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 18px; margin: 0 0 10px; }
+  .ra-head b { font-family: var(--display); font-weight: 600; font-size: 22px; }
+  .ra-head span { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .ra audio { width: 100%; display: block; margin: 0 0 14px; }
+  .ra-page { background: var(--card); border: 1px solid var(--rule); padding: 22px 24px; font-family: var(--serif); font-size: 1.04em; line-height: 1.75; color: var(--muted); }
+  .ra-page .u { cursor: pointer; }
+  .ra-page .u:hover { color: var(--ink); }
+  .ra-page .u.on { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .ra-page .u:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ra-page .h { display: block; font-family: var(--display); font-weight: 600; font-size: 1.25em; margin-bottom: 6px; }
+  .ra-tl { display: flex; height: 14px; margin: 12px 0 4px; border: 1px solid var(--rule); }
+  .ra-tl i { display: block; background: var(--accent2); opacity: .35; }
+  .ra-tl i + i { border-left: 1px solid var(--paper); }
+  .ra-tl i.on { opacity: 1; background: var(--accent); }
+  .ra-read { font-family: var(--mono); font-size: 13px; color: var(--ink2); min-height: 1.4em; }
+  .ra-cap { font-family: var(--sans); font-size: 14px; color: var(--muted); margin: 12px 0 0; line-height: 1.5; max-width: 64ch; }
+  @media (max-width: 520px) { .ra-page { padding: 16px 14px; } }
 </style>
 </head>
 <body>
@@ -274,6 +294,20 @@
     <div class="cta-row">
       <a class="btn btn-primary" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app</a>
       <a class="textlink" href="../">The short tour</a>
+    </div>
+
+
+    <div class="ra" id="ra">
+      <div class="ra-head"><b>Hear the read-along</b><span>en-US-GuyNeural, 73 seconds</span></div>
+      <audio id="ra-aud" controls preload="none" src="readalong-sample.mp3"></audio>
+      <div class="ra-page" id="ra-page" aria-label="The passage, split into the units edge-tts timed"></div>
+      <div class="ra-tl" id="ra-tl" aria-hidden="true"></div>
+      <p class="ra-read" id="ra-read" aria-live="off"></p>
+      <p class="ra-cap">The opening of <em>Alice's Adventures in Wonderland</em> (public domain),
+        rendered on 2026-10-28 by the V6 engine's <code>synthesize_chapter()</code> with chapter
+        announcements on. The highlight is driven by the
+        <code>readalong-sample.subs.json</code> sidecar it wrote, the same file the desktop player
+        reads: nine units, each the span edge-tts timed. Select a unit to jump to it.</p>
     </div>
 
     <div class="claims">
@@ -362,7 +396,9 @@
     </div>
     <p style="margin-top:22px">
       Since V3 the player uses edge-tts's boundary events directly as the highlight
-      units, so each highlighted span is exactly the span the engine timed. Units
+      units, so each highlighted span is exactly the span the engine timed. The sample
+      at the top shows the mismatch on a small scale: edge-tts timed nine units for that
+      passage, and the engine's own <code>split_sentences()</code> finds six. Units
       are made contiguous so the highlight never flickers between sentences, and
       each file's audio duration is stored for an exact seek bar. The timings live in
       a <code>.subs.json</code> sidecar next to each MP3.
@@ -403,20 +439,23 @@
     <p class="eyebrow">Limitations</p>
     <h2>Desktop only, and you bring the books</h2>
     <p>
-      It is a Python desktop app with a Tkinter interface, so there is nothing to
-      try in a browser. Launchers are included for Windows and macOS, plus a script
+      It is a Python desktop app with a Tkinter interface. The read-along at the top
+      of this page replays the engine's real output in the browser, but the app itself
+      does not run there. Launchers are included for Windows and macOS, plus a script
       that builds a double-clickable macOS <code>.app</code>.
     </p>
     <p>
       Synthesis needs an internet connection, because the voices are Microsoft's
       hosted edge-tts service. ffmpeg is optional and needed only for speed control
-      and <code>.m4b</code>. The repository ships code only, without books or audio; use books you own or public-domain titles, for personal listening.
+      and <code>.m4b</code>. The repository ships no books, and its only audio is the
+      73-second public-domain sample above; use books you own or public-domain titles,
+      for personal listening.
     </p>
     <p>
       There are no screenshots of the player on this page. A capture of the
       desktop window was blocked by a macOS screen-recording permission prompt and
-      has not been retaken, so the command-line output above is the only captured
-      output shown.
+      has not been retaken. The command-line listing and the read-along sample are the
+      captured output shown here.
     </p>
   </section>
 
@@ -438,7 +477,6 @@
 
 <div class="wrap">
   <section class="close">
-    <h2>Make the audiobook nobody recorded</h2>
     <div class="cta-row">
       <a class="btn btn-primary" href="https://github.com/lyhjeremy/epub-to-audiobook">Get the app</a>
       <a class="textlink" href="../">The short tour</a>
@@ -452,8 +490,50 @@
       <a href="https://github.com/lyhjeremy/epub-to-audiobook">Source</a> ·
       MIT © 2026 Jeremy Lee
     </p>
-    <p>For books you own or that are in the public domain. No books or audio are shipped.</p>
+    <p>For books you own or that are in the public domain. The sample is from Project Gutenberg.</p>
   </footer>
 </div>
+
+<script>
+(function () {
+  /* sentences[] from readalong-sample.subs.json: [start_ms, end_ms, text] */
+  var U = [[100,1825,"Chapter 1."],[1825,3900,"Down the Rabbit-Hole."],[3900,19212,"Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, 'and what is the use of a book,' thought Alice 'without pictures or conversations?"],[19212,33200,"So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her."],[33200,40850,"There was nothing so VERY remarkable in that; nor did Alice think it so VERY much out of the way to hear the Rabbit say to itself, 'Oh dear!"],[40850,42475,"Oh dear!"],[42475,44412,"I shall be late!"],[44412,68512,"when she thought it over afterwards, it occurred to her that she ought to have wondered at this, but at the time it all seemed quite natural); but when the Rabbit actually TOOK A WATCH OUT OF ITS WAISTCOAT-POCKET, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was"],[68512,72840,"just in time to see it pop down a large rabbit-hole under the hedge."]], DUR = 72840;
+  var aud = document.getElementById("ra-aud"), page = document.getElementById("ra-page"), tl = document.getElementById("ra-tl"), rd = document.getElementById("ra-read");
+  var spans = [], bars = [], on = -1, pending = false;
+  U.forEach(function (u, i) {
+    var s = document.createElement("span");
+    s.className = "u" + (i < 2 ? " h" : ""); s.tabIndex = 0; s.textContent = u[2];
+    if (i === 1) s.className = "u";
+    s.addEventListener("click", function () { jump(i); });
+    s.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); jump(i); } });
+    spans.push(s);
+    var b = document.createElement("i"); b.style.flex = (u[1] - u[0]) + " 0 0"; tl.appendChild(b); bars.push(b);
+  });
+  // "Chapter 1." and the title share the heading line; the rest is running text.
+  var h = document.createElement("span"); h.className = "h"; h.appendChild(spans[0]); h.appendChild(document.createTextNode(" ")); h.appendChild(spans[1]);
+  spans[0].className = "u"; page.appendChild(h);
+  for (var i = 2; i < spans.length; i++) { page.appendChild(spans[i]); page.appendChild(document.createTextNode(" ")); }
+  function sec(ms) { return (ms / 1000).toFixed(1); }
+  function mark(i) {
+    if (i === on) return; on = i;
+    spans.forEach(function (s, j) { s.classList.toggle("on", j === i); });
+    bars.forEach(function (b, j) { b.classList.toggle("on", j === i); });
+    rd.textContent = i < 0 ? "" : "Unit " + (i + 1) + " of " + U.length + ": " + sec(U[i][0]) + " s to " + sec(U[i][1]) + " s";
+  }
+  function jump(i) {
+    mark(i);
+    function go() { pending = false; aud.currentTime = U[i][0] / 1000 + 0.01; var p = aud.play(); if (p && p.catch) p.catch(function () {}); }
+    if (aud.readyState >= 1) go();
+    else { pending = true; aud.addEventListener("loadedmetadata", go, { once: true }); aud.preload = "metadata"; aud.load(); }
+  }
+  aud.addEventListener("timeupdate", function () {
+    if (pending || aud.seeking) return;
+    var t = aud.currentTime * 1000, k = -1;
+    U.forEach(function (u, j) { if (t >= u[0]) k = j; });
+    mark(k);
+  });
+  rd.textContent = U.length + " timed units across " + sec(DUR) + " s";
+})();
+</script>
 </body>
 </html>

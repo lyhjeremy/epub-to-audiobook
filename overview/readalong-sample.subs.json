@@ -1,0 +1,54 @@
+{
+ "version": 3,
+ "mp3": "01 - Down the Rabbit-Hole.mp3",
+ "voice": "en-US-GuyNeural",
+ "rate": "+0%",
+ "duration_ms": 72840,
+ "sentences": [
+  {
+   "start_ms": 100,
+   "end_ms": 1825,
+   "text": "Chapter 1."
+  },
+  {
+   "start_ms": 1825,
+   "end_ms": 3900,
+   "text": "Down the Rabbit-Hole."
+  },
+  {
+   "start_ms": 3900,
+   "end_ms": 19212,
+   "text": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, 'and what is the use of a book,' thought Alice 'without pictures or conversations?"
+  },
+  {
+   "start_ms": 19212,
+   "end_ms": 33200,
+   "text": "So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her."
+  },
+  {
+   "start_ms": 33200,
+   "end_ms": 40850,
+   "text": "There was nothing so VERY remarkable in that; nor did Alice think it so VERY much out of the way to hear the Rabbit say to itself, 'Oh dear!"
+  },
+  {
+   "start_ms": 40850,
+   "end_ms": 42475,
+   "text": "Oh dear!"
+  },
+  {
+   "start_ms": 42475,
+   "end_ms": 44412,
+   "text": "I shall be late!"
+  },
+  {
+   "start_ms": 44412,
+   "end_ms": 68512,
+   "text": "when she thought it over afterwards, it occurred to her that she ought to have wondered at this, but at the time it all seemed quite natural); but when the Rabbit actually TOOK A WATCH OUT OF ITS WAISTCOAT-POCKET, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was"
+  },
+  {
+   "start_ms": 68512,
+   "end_ms": 72840,
+   "text": "just in time to see it pop down a large rabbit-hole under the hedge."
+  }
+ ]
+}

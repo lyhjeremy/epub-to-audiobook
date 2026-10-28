@@ -52,9 +52,9 @@ This repo ships only V6.
 
 ## Limitations
 
-- Desktop only (Tkinter), so there is nothing to try in a browser.
+- Desktop only (Tkinter). The [write-up](https://lyhjeremy.github.io/epub-to-audiobook/overview/) replays a 73-second read-along sample in the browser, but the app itself does not run there.
 - Synthesis needs an internet connection, since edge-tts is a hosted Microsoft service. Keep `edge-tts` upgraded: it is an unofficial endpoint and older versions stop working.
-- The repo ships code only, without books or audio; convert books you own or public-domain titles, for personal use.
+- The repo ships no books. Its only audio is `overview/readalong-sample.mp3` and its `.subs.json` sidecar: the opening of *Alice's Adventures in Wonderland* (public domain) rendered by the V6 engine on 2026-10-28. Convert books you own or public-domain titles, for personal use.
 
 ## How to run
 
