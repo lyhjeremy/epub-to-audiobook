@@ -59,6 +59,8 @@ This repo ships only V6.
 ## How to run
 
 ```bash
+git clone https://github.com/lyhjeremy/epub-to-audiobook && cd epub-to-audiobook
+python3 -m venv .venv && source .venv/bin/activate
 pip install edge-tts ebooklib beautifulsoup4 pygame
 pip install mutagen            # optional: ID3 tags and cover art
 
@@ -70,7 +72,10 @@ pip install mutagen            # optional: ID3 tags and cover art
 python "App V6/epub_to_audiobook_gui_v6.py"                 # GUI with read-along
 python "App V6/epub_to_audiobook_v6.py" book.epub           # command line
 python "App V6/epub_to_audiobook_v6.py" --list book.epub    # dry run: chapters and estimates
+python "App V6/epub_to_audiobook_v6.py" book.epub --voice zh-CN-XiaoxiaoNeural   # Chinese book
 ```
+
+The command line's default voice is `en-US-GuyNeural`, which reads only the chapter headings of a Chinese book, so pass a Chinese voice for one. The launchers below run the `python3` on your PATH, so install the packages there or start them from the activated venv.
 
 On Windows you can double-click `App V6/Launch Audiobook App.bat`; on macOS, `Launch Audiobook App.command`, or build a standalone app with `Make Mac App.command`.
 
